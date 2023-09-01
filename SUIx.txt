@@ -1,0 +1,464 @@
+SUIx long duration intervalometer 
+User Guide
+    • Make sure you read this guide, at least the “Test Shots and Disclaimer” section, before using the script.
+    • Store this guide with the script and on your phone/pc so you can use it in the future.
+Test Shots and Disclaimer
+If settings can be made in Canon Firmware, you should. This guide will refer to it as setting in CF.
+Take some initial test shots by trying the “Minimum Setup” in the script menu. 
+Press [MENU] to leave the setup.
+Start SUIx by pressing [SHOOT]  
+Stop SUIx by pressing [MENU]
+Play them back to make sure the images were recorded correctly.
+If not, please try to change settings in Camera Setup to see if that solves your issue. 
+This software comes without any explicit or implied warranty. Use at your own risk.
+ 
+What do you want to do?
+Shoot 24/7 or shorter at a timed interval: Minimum Setup
+Setting an exposure limit: Exposure Setup
+Shoot between specific times and lighting conditions: Daily Start-Stop Setup
+One time actions: Primairy Start-Stop Setup
+Extreme long shoots: Extreme long run setup
+Set USB functions, indicators and low voltage shutdown: Camera Setup
+Debug feature: Script Testing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Getting Started
+This chapter explains preparations before shooting.
+To get your camera ready you need to download and unpack CHDK on your SD card. 
+See: https://dl.orangedox.com/prepareyoursdcard for details
+Place SUIx.lua on your CHDK loaded SD card in the folder: CHDK>SCRIPTS 
+Place the SD card in your camera, boot up CHDK, enable the script function. 
+Load SUIx.lua by pressing [func set] twice and select it from the directory, press [func set] to select. 
+
+The script is designed to run in P, Tv, Av, M, C and AUTO mode.
+To make the program run reliable it is prudent to set a few values in CF:
+The time pictures are shown after a shot should be limited to 2 sec.
+Image Stabilisation should be set to OFF when working with a tripod or other fixed point.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Minimum Setup
+All that's needed to start making a time lapse or stop motion image series with SUIx. 
+
+Shot Interval
+Specifies the time between shots. 
+Shot moments are sync'd to the time of day, so a 1 hour interval will cause shots to occur at the top of each hour, 15 minute interval will shoot at a quarter past, half past, quarter to and on the hour, etc.
+Depending on your camera model and expected longest exposure time, a good starting point for tight timings is exposure limit + 10 seconds, if you check the log entry times you can tighten timing for your cam model. By setting review to OFF in CF there is less 'busy' time  between 2 exposures. 
+Values: 2sec 5sec 10sec 12sec 15sec 20sec 30sec 1min 2min 5min 10min 15min 30min 1hr 2hr 4hr 
+Default: 30 seconds 
+Zoom position
+If your camera has [C]ustom settings or does not need to reboot during the project, it is preferrable to set zoom in CF.
+Specifies the position to set the zoom lens at the start of shooting in "zoom steps" for the camera.
+If you select an out of range step, the script will reduce it to 1/10 of the choosen step.
+Depending on your cam model you can have a few or more than 100 steps, not all steps are equal in quality, use Test zoom steps? to determine the optimal value for your purpose.
+If you experience 'zoom shift' while the script takes pictures, set values in CF and SUIx equally.
+Values: Off 0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% 
+Default: Off 
+Focus @ Distance 
+Sets the camera focus at the value set at Distance in mm when the script starts and locks it there.
+AFL should be visible on screen after starting the script with focus @ infinity enabled*.
+Values: Off / On 
+Default: Off 
+
+* With some camera models AFL is not available via CHDK, you will need to set the focus in manual focus mode
+On several models the display should not be turned off between shots, since that disables the manual setting. 
+Unless saved in a [C]ustom setting if the camera supports it.
+If your camera does not support AFL natively consider using MF to prevent change in focus.
+
+
+Distance in mm? 
+Defines where the camera focus should end, works best if actual focal point lies further than set value. Be aware that Focus values in the log are only valid when in AF mode.
+Most cams limit the accepted value at around 65000 mm.
+Values: 0 - 99999 
+Default: 39500
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Exposure Setup
+This is for shooting at low light conditions or with a setup where the camera moves.
+Enable Exposure Limit
+Causes the script to set a new exposure limit and overrides the exposure limit in CF.
+Activating this setting disables CF 'Dark Frame'. This makes it possible to set longer exposure times per  interval. Image noise may increase.
+
+Values: disabled / enabled 
+Default: disabled 
+Slowest Shutter Speed
+Values shorter than 1 second work best with ISO set to a high value or AUTO in CF.
+Higher ISO values in CF lead to lower maximum exposure values registered in the EXIF data, values higher than CF natively supports are not logged correctly in EXIF data.
+Setting this value stops exposure at set value instead of the value SUIx or CF calculated. 
+
+Values: 1/125 1/60 1/2 X 1.3 1.6 2 2.5 3.2 4 5 6 8 10 12 16 20 22 24 32 40 48
+
+Default: 1 sec (X) 
+
+Exposure change >1s
+Causes the script to change exposure time below 1 second faster or slower than default.
+[no] exposure change tries to keep overall light the same as made at 1 second. 
+[natural] goes darker or lighter with conditions as expected with 1/2.3 sensor. 
+Dark, moreDrk and mostDrk works better with langer or more light sensitive sensors.
+Most usefull in dusk & dawn situations or other moments with high dynamics in lighting.
+
+Values: no natural dark moreDrk mostDrk 
+Default: natural 
+
+
+
+With exposure change >1s you will adapt the exposure timing below 1 second.
+With no exposure change you will follow the standard profile and dark shots will become ever more bright.
+As seen in the graphic, each setting has it's own deviation. With more light sensitive sensors a higher deviation is requered to make shots in the dark look like night.
+ 
+The compensation Tv @ 1s setting will shift the connection point.
+You can use compensation as you see fit, lower compensation will make all following shots lighter, higher compensation will make all following shots darker.
+
+This exposure data is from a S110, other models have different profiles.
+
+
+
+Daily Start-Stop Setup
+If dark/night shots are unwanted you can save disk space by setting values here. Default it starts and stops at the given time and can be extended to start at a given light level.
+
+Enable start/stop values
+Start or stop shooting based on the specified shutter speed and/or start and stop times. 
+Values: disabled / enabled 
+Default: disabled 
+Shoot when shutter speed <
+Specifies a minimum shutter speed value that will cause the intervalometer to start interval shooting regardless of the day start or stop settings.
+Be aware: start/stop times are leading as minimum start/stop values
+Note that start speeds > 1 second in P or Auto mode may cause the intervalometer to run continuously unless you enable the exposure limiter with a value > 'shoot when shutter speed <'. 
+Values: Off 2sec 1sec 1/2 1/4 1/8 1/30 1/60 
+Default: Off 
+Starting hour (24 Hr)
+Combines with Starting Minute (below) to specify a time at which the intervalometer will switch into "Day" mode and begin interval shooting. If 'shoot when shutterspeed <' is enabled, this value can be overriden and shooting can start earlier. 
+Range: 0 to 23 
+Default: 9 
+..and starting minute
+Range: 0 to 59 
+Default: 0 
+Ending hour (24 Hr)
+Combines with Ending Minute (below) to specify a time a which the intervalometer will switch into "Night" mode and stop interval shooting. If 'shoot when shutter speed <' mode is enabled, then this value can be overridden by those settings and shooting will continue later. 
+Range: 0 to 23 
+Default: 17 
+..and ending minute
+Range: 0 to 59 
+Default: 0 
+Enable on days
+Ability to shoot on specific days: all, only on week days or only on weekends.
+Values: All Mon-Fri Sat&Sun 
+Default: All 
+
+
+
+
+
+
+
+
+
+
+
+Primairy Start-Stop Setup
+To start the cam later, stop after a given period and what to do when the SD card is full
+Delay Start (Days) 
+Specified the number of days the script should wait before starting to shoot. 
+Range: 0 to 99999 
+Default: 0 
+End after days 
+The maximum number of days the script will run before turning off the camera at midnight. Set to 0 to disable this feature. 
+Range: 0 to 99999 
+Default: 0 
+Action if card full? 
+Specifies if script should halt or delete oldest images when there is no remaining SD card space. 
+If you enable the option to delete the oldest images when the SD card is full, please ensure the File Numbering setting in the Canon menus is set to Continuous (and not Auto Reset). Also, make sure the Lens Retract setting in the Canon menu is not set to 0 sec (the 1 min setting will prevent the lens from automatically retracting while the script is deleting old files as it does so in Playback mode to avoid crashing the camera). 
+Values: Quit Delete 
+Default: Quit 
+
+Extreme Long Run Setup
+From version V0.4.3 onwards minimum requirement for reboot is CHDK 1.5.0.5553
+. 
+Days between resets
+The SUIx script will periodically force a complete camera reset and then restart itself. 
+This resets the camera tic timer before it overflows, sets RTC and solves anything else that was not designed to run for long periods of time.
+Not all cameras support the reboot function, by checking "Debug mode?" you can quickly verify if it works on your model.
+The tic timer can run a maximum of little more than 24 days.
+This feature means you must start CHDK with the "SD Card Lock" autoboot method - CHDK will not automatically load after a reboot if you use the "firmware update" method of loading CHDK. 
+Note that the script shot counter clears to zero at each reset. 
+Range: 1 to 25 
+Default: 23 
+Reset Hour (24 Hr)
+The hour of the day for the reset. The actual reset starts ten minutes before this hour. 
+Range 1 to 23 
+Default 12
+Time correction (Sec) 
+The internal clock usually runs slightly faster or slower than real time.
+Actual offset is cam specific, influenced by temperature and other factors.
+By setting a value in seconds, the clock is reset with this correction every time the camera reboots.
+Test your camera for a week or more while the clock starts syncronised to get a proper value for your camera.
+
+Range -120 to 30 
+Default -5
+Camera Setup
+Miscellanious settings
+Display Off mode (day/night) 
+Provides the various display & power saving modes discussed here during day or night mode operation. 
+BKLT turns off the LCD backlight, DispKey presses the cameras DISP button until the display turns off, PlayKey puts the camera into playback mode between shots & turns off the backlight. ShrtCut presses the camera's short cut key - this requires that the short cut key be set to "Sleep Mode" in the Canon menus. LCD actually turns off the LCD & backlight completely. 
+Note that not all modes will work with all cameras. Also, when using PlayKey mode, the camera lens will retract after a timeout, This can be good in dirty locations when using long intervals between shots or it can cause extra wear&tear if you are using short intervals. 
+Values: None LCD BKLT DispKey PlayKey ShrtCut LCD 
+Default: BKLT 
+Low battery shutdown mV
+Battery voltage reading in millivolts at which the camera will shutdown on the assumption the battery is effectively drained. Set to zero if you are using an external A/C powered supply or to let CF decide.
+Values: 0 to 12000 mV 
+Default: 0 
+
+
+
+Status LED (day/night)
+With the LCD blanked/off, it can be difficult to know that the script is still running. Specifying an LED here will cause it to blink briefly every few seconds, giving feedback that the script is still operational even when the display is off. The value to use for each LED is camera implementation dependent - some experimentation may be required. 
+Values: Off 0 1 2 3 4 5 6 7 8 
+Default: 1 
+Theme
+Select color or mono mode for on screen status display. 
+Values: Color / Mono
+Default: Color 
+Pause when USB connected?
+Causes the camera to switch to playback mode while USB is connected to allow for PTP transfer of pictures to a host PC. 
+Values: Off / On 
+Default: Off 
+Shoot on USB pulse? 
+Trigger a shot each time USB port +5V signal line goes from 0V to 5V. 
+Values: Off / On 
+Default: Off 
+Logging
+Specifies where log messages go. This does not affect information displayed on the on screen GUI box.
+Values: Off Screen SDCard Both 
+Default: SDCard
+
+
+
+Compensation Tv @ 1 sec
+Specifies compensation for quick sensors and shifts length of 1 second exposure window.
+This value can be found in the log @ 1-20 Tv96.
+For most cameras with 1/2.3 sensor 60 will be a balanced choice.
+You can increase or decrease the value to taste.
+Range: -250 to 500 
+Default: 60
+
+To find and set the value manually:
+
+    • Enable More data in log? Or make this calculation from the default log: 
+compensation = Tv-Bv+Sv-Av
+    • Enable exposure limit, set interval to 5 seconds or more
+    • Start SUIx before it becomes dark. Stop when dark.
+    • Look for 1 second tv values in the log
+    • Set Compensation Tv @ 1s to the value you found
+    • If the calculated results differ between the min and max value of  the min and max value of 1 sec use close to the highest value as a starting point
+    • If you are still not satisfied with the results, let me know: https://chdk.setepontos.com/index.php?topic=13856.msg140879
+
+
+In this example the compensation is shown. 
+IMG_0084.JPG Tv96=1 compensation=[Tv96] -[Tv=Bv+Sv+Av] =1- -32+371-372=34.
+
+
+Setting this to the proper value does not solve your cams exposure? 
+Please let me know:
+  https://chdk.setepontos.com/index.php?topic=13856.msg140879
+Preferrably with a log and an example image or video.
+
+Script Testing
+Debug Mode 
+When enabled, most of the script is running quickly (about 20 minutes per second). Useful for verifying script setup by allowing the script to simulate functions in only a few minutes.
+It can not be used to check if timing is set properly, since not all functions in the script are running equally quickly. Using this might change your clock due to reboots.
+Values: Off On 
+Default: Off 
+
+More data in log? 
+When enabled, values in the log are extended with: 
+
+    • Compensation found
+    • Bv+Sv-Av
+      
+Values: Off On 
+Default: Off
+
+Test zoom steps?
+When enabled the cam will start at the highest zoom setting, decrementing the zoom position with each shot.
+If run in a dark enviroment you also log the minimum aperture value per zoom step in csv and EXIF data.
+Press [MENU] to stop the script, set interval at >20 seconds. 
+
+Values: Off On 
+Default: Off
+Miscellanious
+
+Logging to SD card
+SUIx provides the possibility to log info to a file called SUIx.csv, created in the main directory.
+      (A) Sorting date
+(B) sorting time
+(C) Days the script has been active
+(D) Full date
+(E) Settings information* 
+(F) folder name
+(G) Image file number or <no shot> when interval is taking place outside shooting hours. 
+(I) Exposure time in standard timing format
+(K) f stop
+(M) ISO value or closest equivalent
+(O) Tv96 
+(Q) Bv96 
+(S) Sv96
+(U) Av96
+(AA) Battery voltage
+(AC) Sensor temperature
+
+      *Some data in the log corresponds to menu items, starting with 0 for the first item. 
+EXAMPLE: theme:0 (Values: (0) Color (1) Black 
+ theme: 0 means OSD has a blue upper band.
+ 
+
+
+On Screen Display
+In addition to log messages in the normal script console, SUIx provides an on screen status box showing the current status of the shooting progress. 
+Depending on display settings OSD may dissapear after a few minutes 
+Items displayed include: 
+    • current number of shots since last reset 
+    • time to next shot 
+    • elapsed number of days 
+    • Tv currently in use [& Tv shooting threshold] 
+    • time to next camera reboot 
+    • daily time to start shooting 
+    • daily time to stop shooting 
+    • days until camera shuts down (if enabled) 
+    • SD card space left 
+    • time to display blanking 
+    • shooting mode: Day (on) or Night (off) 
+
+
+Development
+Trouble with this script: https://chdk.setepontos.com/index.php?topic=13856.msg140879
+If you are looking for a solution: MPGVerberne@gmail.com
+Platform ID
+P-ID (Table)
+Controleren of je model bepaalde functies ondersteund:
+Function test all models 
+
+Licence: 
+SUIx GPL © 2018-2022 Mlapse
+thx to Waterwingz for code adapted from Ultimate Intervalometer
+thx to MSL for code adapted from tv2seconds
+thx to Reyalp for creating set_clock
+
+
+SUIx is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+with CHDK. If not, see <http://www.gnu.org/licenses/>.
+
+V0.6.7 zoom step test
+V0.6.6 all zoom steps selectable plus test
+V0.6.5 get_focus() added in extended log
+V0.6.4 version number in OSD
+V0.6.3 log info compensation/OSD disabled in regular run
+V0.6.2 main menu change
+V0.6.1 improved compensation and calibration
+V0.6.0 OSD 3s active after each shot
+V0.5.9 core calculation change
+V0.5.8 bugfix backlight off when shooting
+V0.5.7 bugfix larger than 1 sec exposure tv2seconds
+V0.5.6 bugfix shoot when shutterspeed 
+V0.5.5 optimised osd log & changed log layout
+V0.5.4 large screen height compensation change
+V0.5.3 version number in menu for use in log
+V0.5.2 log data to information
+V0.5.1 extended log, Av96 added
+V0.5.0 manual compensation for quick sensors
+V0.4.9 code cleaning
+V0.4.8 log file includes folder name, Av96 has been removed
+V0.4.7 change in >1 sec exposure to accommodate large, sensitive sensors
+V0.4.6 GUI location change
+V0.4.5 dark frame disabled with long exposure
+V0.4.4 added minimum build warning 5553 for set_clock
+V0.4.3 time correction value for long runs 
+V0.4.2 reboot stability improvement 
+V0.4.1 IS mode set to off for Digic 4 and up 
+V0.4.0 reintroduced double line height for Digic6 
+V0.3.9 shorten downtime 
+V0.3.8 added some , for better csv layout 
+V0.3.7 sorting date to log
+V0.3.6 AFL for S110
+V0.3.5 text and layout change log
+V0.3.4 changed dow_mode data to info in log
+V0.3.3 added card size & space info at (re)start to log
+V0.3.2 adressing long term usage stability issues
+V0.3.1 NR RAW disabled
+V0.3.0 extra exposure times
+V0.2.9 changed log to CSV
+V0.2.8 added values to log 
+V0.2.7 removed development info from script to manual
+V0.2.6 extra interval times
+V0.2.5 clean up code
+V0.2.4 adressed feature bugs
+V0.2.3 possibility for smaller than 1 sec values of minimum exposure
+V0.2.2 improved calculations for start/stop exposure
+V0.2.1 added exposure shift values
+V0.2.0 improved exposure calculations
+V0.1.9 adressing stability issues
+V0.1.3 exp. change parameter added in menu
+V0.1.2 exposure shift after 1 sec, removed HDR
+V0.1.1 redesign of menu
+V0.1.0 user friendly exposure limits
+V0.0.9 added long exposure with limiter
+V0.0.1 used most of Ultimate Intervalometer as basis
+
